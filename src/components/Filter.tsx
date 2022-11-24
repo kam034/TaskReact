@@ -1,39 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { VehicleFilter, VehicleType } from "../data/vehicles/contracts";
-import { Input } from "@skbkontur/react-ui";
 import { VehicleTypeSelect } from "./VehicleTypeSelect";
 
-export interface FilterProps {
-  filter: VehicleFilter;
-  onChange: (filter: VehicleFilter) => void;
-}
-
-export const initFilter: VehicleFilter = {
-  title: "",
-  type: null
-};
-
-export class Filter extends React.Component<FilterProps> {
-  render(): React.ReactNode {
+export function Filter(props: {onChange: (filter: VehicleFilter) => void}) {
+  
+  const [type, setType] = React.useState<VehicleType | null>(null)
+  const [title, setTitle] = React.useState<string>("")
+  
     return (
       <div className="filter">
-        <Input           
-          value={this.props.filter.title}
-          onValueChange={this.handleTitleonChange}
-        /> 
+        <input type="text"          
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            props.onChange({title: e.target.value, type: type})
+          }}
+        />
         <VehicleTypeSelect
-          value={this.props.filter.type}
-          onChange={this.handleTypeonChange}
+          value={type}
+          onChange={ (type) => {
+            setType(type);
+            props.onChange({title: title, type: type})
+          }}
         /> 
       </div>
     );
   }
-
-  private handleTitleonChange = (title: string): void => {
-    this.props.onChange({ ...this.props.filter, title });
-  };
-
-  private handleTypeonChange = (type: VehicleType | null): void => {
-    this.props.onChange({ ...this.props.filter, type });
-  };
-}

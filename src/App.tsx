@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Vehicle } from "./data/vehicles/contracts";
+import { Vehicle, VehicleFilter } from "./data/vehicles/contracts";
 import { VehicleApi } from "./data/vehicles/api";
-import { Filter, initFilter } from "./components/Filter";
+import { Filter } from "./components/Filter";
 import { Table } from "./components/Table";
 import "./index.css"
 
+export const initFilter: VehicleFilter = {
+  title: "",
+  type: null
+};
 
 export default function App() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [filter, setFilter] = useState(initFilter);
 
   useEffect(() => {
-    const data = VehicleApi.search(filter);
+    const data = VehicleApi.search(initFilter);
     setVehicles(data);
-  }, [filter]);
+  }, []);
 
   return (
     <>
-      <Filter filter={filter} onChange={setFilter} />
+      <Filter onChange={(filter: VehicleFilter) => {
+          const data = VehicleApi.search(filter);
+          setVehicles(data);
+      }} />
       <Table vehicles={vehicles} />
     </>
   );
